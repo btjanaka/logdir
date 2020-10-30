@@ -1,0 +1,13 @@
+# Python
+*.egg-info
+__pycache__/
+build
+dist
+env/
+
+# Editor
+*.swp
+*.vim
+
+# Pytest
+.coverage

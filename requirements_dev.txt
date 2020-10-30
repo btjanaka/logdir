@@ -1,0 +1,10 @@
+pip==20.2.4
+isort
+yapf
+pylint
+bump2version
+
+# Testing
+pytest==4.6.5
+pytest-cov==2.10.1
+pytest-runner==5.1
