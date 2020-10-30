@@ -17,7 +17,7 @@ setup(
     description="A utility for managing logging directories.",
     long_description=readme(),
     long_description_content_type="text/markdown",
-    #  url="http://btjanaka.net/logdir", # Not available (yet).
+    url="http://github.com/btjanaka/logdir",
     install_requires=[],
     extras_require={},
     license="MIT",

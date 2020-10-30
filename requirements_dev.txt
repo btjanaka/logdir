@@ -8,3 +8,8 @@ bump2version
 pytest==4.6.5
 pytest-cov==2.10.1
 pytest-runner==5.1
+
+# Distribution
+wheel
+setuptools
+twine
