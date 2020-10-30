@@ -11,7 +11,7 @@ def readme():
 
 setup(
     name="logdir",
-    version="0.1.1",
+    version="0.1.2",
     author="Bryon Tjanaka",
     author_email="bryon@btjanaka.net",
     description="A utility for managing logging directories.",
