@@ -1,5 +1,7 @@
 # logdir
 
+![Test and Deploy](https://github.com/btjanaka/logdir/workflows/Test%20and%20Deploy/badge.svg?branch=master)
+
 A utility for managing logging directories.
 
 <!-- vim-markdown-toc GFM -->
