@@ -14,7 +14,7 @@ To install from PyPI, run:
 pip install logdir
 ```
 
-To install from source,
+To install from source, clone this repo, cd into it, and run:
 
 ```bash
 pip install -e .
