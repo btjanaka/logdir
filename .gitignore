@@ -6,6 +6,9 @@ dist
 env/
 MANIFEST
 
+# Docs
+site/
+
 # Editor
 *.swp
 *.vim
