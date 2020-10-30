@@ -2,7 +2,11 @@ pip==20.2.4
 isort
 yapf
 pylint
-bump2version
+
+# Documentation
+mkdocs
+mkdocs-material
+mkdocstrings
 
 # Testing
 pytest==4.6.5
@@ -13,3 +17,4 @@ pytest-runner==5.1
 wheel
 setuptools
 twine
+bump2version

@@ -1,4 +1,4 @@
-"""Installation instructions for logdir."""
+"""Installation instructions for LogDir."""
 
 from setuptools import setup
 
