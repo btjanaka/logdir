@@ -10,7 +10,13 @@ nav:
   - Contributing: contributing.md
 plugins:
   - search
-  - mkdocstrings
+  - mkdocstrings:
+      watch:
+        - logdir
+      handlers:
+        python:
+          rendering:
+            show_object_full_path: True
 theme:
   name: material
   palette:
@@ -18,3 +24,5 @@ theme:
   icon:
     logo: material/folder
   favicon: img/favicon.svg
+extra_css:
+  - css/mkdocstrings.css
