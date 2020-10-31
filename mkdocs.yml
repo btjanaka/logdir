@@ -17,6 +17,7 @@ plugins:
         python:
           rendering:
             show_object_full_path: True
+            show_root_toc_entry: False
 theme:
   name: material
   palette:
