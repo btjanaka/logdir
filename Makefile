@@ -56,28 +56,12 @@ test: ## run tests quickly with the default Python
 test-all: ## run tests on every Python version with tox
 	tox
 
-docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/logdir.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ logdir
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	$(BROWSER) docs/_build/html/index.html
+docs: ## generate HTML documentation, including API docs
+	mkdocs build
+	$(BROWSER) site/index.html
 
 servedocs: ## compile the docs watching for changes
-	sphinx-autobuild \
-		--open-browser \
-		--watch logdir/ \
-		docs/ \
-		docs/_build/html
-
-servedocs-ignore-vim: ## compile the docs watching for changes, ignore vim .swp files
-	sphinx-autobuild \
-		--open-browser \
-		--watch logdir/ \
-		--ignore *.swp \
-		docs/ \
-		docs/_build/html
+	mkdocs serve
 
 release: dist ## package and upload a release
 	twine upload dist/*
