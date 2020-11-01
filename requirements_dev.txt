@@ -16,6 +16,5 @@ freezegun==1.0.0
 
 # Distribution
 wheel
-setuptools
 twine
 bump2version
