@@ -15,3 +15,6 @@ site/
 
 # Pytest
 .coverage
+
+# Output
+logs/

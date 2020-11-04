@@ -9,7 +9,9 @@ def readme():
         return file.read()
 
 
-install_requires = []
+install_requires = [
+    "ruamel.yaml>0.15",
+]
 
 extras_require = {
     "dev": [

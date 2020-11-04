@@ -6,8 +6,11 @@ __all__ = [
 ]
 
 import datetime
+import json
 from collections import namedtuple
 from pathlib import Path
+
+from ruamel import yaml
 
 
 class LogDir:
@@ -85,3 +88,37 @@ class LogDir:
             filename.parent.mkdir(parents=True)
         filename.touch()
         return filename
+
+    def save_data(self, data, filename):
+        """Saves data to `filename` in the log directory.
+
+        This is particularly useful when saving configuration options or other
+        pieces of data that are dict's or lists.
+
+        Supported file types are:
+
+        - JSON (`*.json`)
+        - YAML (`*.yml`, `*.yaml`)
+
+        Args:
+            data (dict or list): Dictionary to save.
+            filename (str or pathlib.Path): The name of the file; we will create
+                it under the logdir using [pfile][logdir.LogDir.pfile].
+        Returns:
+            (pathlib.path): Full path to the config file.
+        Raises:
+            RuntimeError: An unsupported filetype was passed into `filename`.
+        """
+        filepath = self.pfile(filename)
+
+        ext = filepath.suffix[1:]
+        if ext == "json":
+            with filepath.open("w") as file:
+                json.dump(data, file)
+        elif ext in ("yml", "yaml"):
+            with filepath.open("w") as file:
+                yaml.dump(data, file)
+        else:
+            raise RuntimeError(f"Unsupported filetype '{ext}'")
+
+        return filepath
