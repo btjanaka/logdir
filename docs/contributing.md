@@ -1,9 +1,16 @@
 # Contributing
 
+## Getting Started
+
+After cloning the repo, install the development dependencies with:
+
+```bash
+pip install -e .[dev]
+```
+
 ## Documentation
 
-Make sure the requirements in `requirements_dev.txt` are installed. Then, serve
-the docs locally with:
+With the dev requirements installed, serve the docs locally with:
 
 ```bash
 mkdocs serve

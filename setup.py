@@ -9,6 +9,33 @@ def readme():
         return file.read()
 
 
+install_requires = []
+
+extras_require = {
+    "dev": [
+        "pip==20.2.4",
+        "isort",
+        "yapf",
+        "pylint",
+
+        # Documentation
+        "mkdocs==1.1.2",
+        "mkdocs-material==6.1.0",
+        "mkdocstrings==0.13.6",
+
+        # Testing
+        "pytest==4.6.5",
+        "pytest-cov==2.10.1",
+        "pytest-runner==5.1",
+        "freezegun==1.0.0",
+
+        # Distribution
+        "bump2version==0.5.11",
+        "wheel==0.33.6",
+        "twine==1.14.0",
+    ],
+}
+
 setup(
     name="logdir",
     version="0.2.2",
@@ -18,8 +45,8 @@ setup(
     long_description=readme(),
     long_description_content_type="text/markdown",
     url="http://github.com/btjanaka/logdir",
-    install_requires=[],
-    extras_require={},
+    install_requires=install_requires,
+    extras_require=extras_require,
     license="MIT",
     keywords="log logging utilities",
     classifiers=[
