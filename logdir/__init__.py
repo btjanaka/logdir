@@ -71,7 +71,7 @@ class LogDir:
         Args:
             filename (str or pathlib.Path): The name of the file.
         Returns:
-            (str): Path to the new file in the logging directory.
+            str: Path to the new file in the logging directory.
         """
         return str(self.pfile(filename))
 
@@ -81,7 +81,7 @@ class LogDir:
         Args:
             filename (str or pathlib.Path): The name of the file.
         Returns:
-            (pathlib.Path): Path to the new file in the logging directory.
+            pathlib.Path: Path to the new file in the logging directory.
         """
         filename = self.logdir / Path(filename)
         if not filename.parent.exists():
@@ -105,7 +105,7 @@ class LogDir:
             filename (str or pathlib.Path): The name of the file; we will create
                 it under the logdir using [pfile][logdir.LogDir.pfile].
         Returns:
-            (pathlib.path): Full path to the config file.
+            pathlib.path: Full path to the config file.
         Raises:
             RuntimeError: An unsupported filetype was passed into `filename`.
         """
