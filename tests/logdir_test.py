@@ -56,42 +56,20 @@ def test_creates_nested_file(tmp_path):
     assert Path(file).exists()
 
 
-def test_saves_data_json(data, tmp_path):
+@pytest.mark.parametrize("ext,loader,mode", [
+    ("json", json.load, "r"),
+    ("yml", yaml.safe_load, "r"),
+    ("yaml", yaml.safe_load, "r"),
+    ("toml", toml.load, "r"),
+    ("pkl", pickle.load, "rb"),
+    ("pickle", pickle.load, "rb"),
+])
+def test_save_data(ext, loader, mode, data, tmp_path):
     logdir = LogDir("My Logging Dir", tmp_path)
-    filepath = logdir.save_data(data, "data.json")
+    filepath = logdir.save_data(data, f"data.{ext}")
 
-    with filepath.open("r") as file:
-        assert json.load(file) == data
-
-
-def test_saves_data_yaml(data, tmp_path):
-    logdir = LogDir("My Logging Dir", tmp_path)
-    filepath_yml = logdir.save_data(data, "data.yml")
-    filepath_yaml = logdir.save_data(data, "data.yaml")
-
-    with filepath_yml.open("r") as file:
-        assert yaml.safe_load(file) == data
-    with filepath_yaml.open("r") as file:
-        assert yaml.safe_load(file) == data
-
-
-def test_saves_data_toml(data, tmp_path):
-    logdir = LogDir("My Logging Dir", tmp_path)
-    filepath = logdir.save_data(data, "data.toml")
-
-    with filepath.open("r") as file:
-        assert toml.load(file) == data
-
-
-def test_saves_data_pickle(data, tmp_path):
-    logdir = LogDir("My Logging Dir", tmp_path)
-    filepath_pkl = logdir.save_data(data, "data.pkl")
-    filepath_pickle = logdir.save_data(data, "data.pickle")
-
-    with filepath_pkl.open("rb") as file:
-        assert pickle.load(file) == data
-    with filepath_pickle.open("rb") as file:
-        assert pickle.load(file) == data
+    with filepath.open(mode) as file:
+        assert loader(file) == data
 
 
 def test_save_data_fails_with_unknown_ext(data, tmp_path):
