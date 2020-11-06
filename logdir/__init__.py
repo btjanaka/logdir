@@ -7,6 +7,7 @@ __all__ = [
 
 import datetime
 import json
+import pickle
 from collections import namedtuple
 from pathlib import Path
 
@@ -58,6 +59,9 @@ class LogDir:
 
         Intermediate directories are created if they do not exist.
 
+        The file is automatically created, so even if you do not use it, there
+        will still be an empty file in the directory.
+
         Example:
             Basic usage:
             ```python
@@ -101,6 +105,7 @@ class LogDir:
         - JSON (`*.json`)
         - YAML (`*.yml`, `*.yaml`)
         - TOML (`*.toml`)
+        - Pickle (`*.pkl`, `*.pickle`)
 
         Args:
             data (dict or list): Dictionary to save.
@@ -123,6 +128,9 @@ class LogDir:
         elif ext == "toml":
             with filepath.open("w") as file:
                 toml.dump(data, file)
+        elif ext in ("pkl", "pickle"):
+            with filepath.open("wb") as file:
+                pickle.dump(data, file)
         else:
             raise RuntimeError(f"Unsupported filetype '{ext}'")
 

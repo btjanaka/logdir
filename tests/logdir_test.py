@@ -1,5 +1,6 @@
 """Tests for logdir."""
 import json
+import pickle
 from pathlib import Path
 
 import pytest
@@ -69,7 +70,7 @@ def test_saves_data_yaml(data, tmp_path):
     filepath_yaml = logdir.save_data(data, "data.yaml")
 
     with filepath_yml.open("r") as file:
-        assert yaml.safe_load(file)
+        assert yaml.safe_load(file) == data
     with filepath_yaml.open("r") as file:
         assert yaml.safe_load(file) == data
 
@@ -80,6 +81,17 @@ def test_saves_data_toml(data, tmp_path):
 
     with filepath.open("r") as file:
         assert toml.load(file) == data
+
+
+def test_saves_data_pickle(data, tmp_path):
+    logdir = LogDir("My Logging Dir", tmp_path)
+    filepath_pkl = logdir.save_data(data, "data.pkl")
+    filepath_pickle = logdir.save_data(data, "data.pickle")
+
+    with filepath_pkl.open("rb") as file:
+        assert pickle.load(file) == data
+    with filepath_pickle.open("rb") as file:
+        assert pickle.load(file) == data
 
 
 def test_save_data_fails_with_unknown_ext(data, tmp_path):
