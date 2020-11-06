@@ -21,9 +21,10 @@ plugins:
 theme:
   name: material
   palette:
-    primary: indigo
+    accent: deep orange
   icon:
     logo: material/folder
   favicon: img/favicon.svg
 extra_css:
   - css/mkdocstrings.css
+  - css/custom.css
