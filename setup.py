@@ -25,6 +25,8 @@ extras_require = {
         "mkdocs==1.1.2",
         "mkdocs-material==6.1.0",
         "mkdocstrings==0.13.6",
+        "pymdown-extensions==8.0.1",
+        "pygments==2.7.2",
 
         # Testing
         "pytest==4.6.5",

@@ -18,13 +18,16 @@ plugins:
           rendering:
             show_object_full_path: True
             show_root_toc_entry: False
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
 theme:
   name: material
   palette:
-    accent: deep orange
+    primary: deep purple
+    accent: indigo
   icon:
     logo: material/folder
   favicon: img/favicon.svg
 extra_css:
   - css/mkdocstrings.css
-  - css/custom.css
