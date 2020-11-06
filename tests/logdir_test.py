@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import pytest
+import toml
 from freezegun import freeze_time
 from ruamel import yaml
 
@@ -71,6 +72,14 @@ def test_saves_data_yaml(data, tmp_path):
         assert yaml.safe_load(file)
     with filepath_yaml.open("r") as file:
         assert yaml.safe_load(file) == data
+
+
+def test_saves_data_toml(data, tmp_path):
+    logdir = LogDir("My Logging Dir", tmp_path)
+    filepath = logdir.save_data(data, "data.toml")
+
+    with filepath.open("r") as file:
+        assert toml.load(file) == data
 
 
 def test_save_data_fails_with_unknown_ext(data, tmp_path):

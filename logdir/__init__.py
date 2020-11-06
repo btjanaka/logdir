@@ -10,6 +10,7 @@ import json
 from collections import namedtuple
 from pathlib import Path
 
+import toml
 from ruamel import yaml
 
 
@@ -99,6 +100,7 @@ class LogDir:
 
         - JSON (`*.json`)
         - YAML (`*.yml`, `*.yaml`)
+        - TOML (`*.toml`)
 
         Args:
             data (dict or list): Dictionary to save.
@@ -118,6 +120,9 @@ class LogDir:
         elif ext in ("yml", "yaml"):
             with filepath.open("w") as file:
                 yaml.dump(data, file)
+        elif ext == "toml":
+            with filepath.open("w") as file:
+                toml.dump(data, file)
         else:
             raise RuntimeError(f"Unsupported filetype '{ext}'")
 

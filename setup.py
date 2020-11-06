@@ -11,6 +11,7 @@ def readme():
 
 install_requires = [
     "ruamel.yaml>0.15",
+    "toml>=0.10",
 ]
 
 extras_require = {
