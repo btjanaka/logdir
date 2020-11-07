@@ -55,10 +55,25 @@ with logdir.pfile("foo/bar/new.txt").open() as file:
     file.write("Hello World!")
 ```
 
-Finally, there is also [save_data()](/api/#logdir.LogDir.pickle), which saves
-data to your desired filetype. JSON, YAML, TOML, and pickle are currently
-supported.
+There is also [save_data()](/api/#logdir.LogDir.save_data), which saves data to a
+file. JSON, YAML, TOML, and pickle files are currently supported.
 
 ```python
 logdir.save_data({"a": 1, "b": 2, "c": 3}, "file.json")
+```
+
+Finally, [readme()](/api/#logdir.LogDir.readme) adds a README.md to the
+directory with multiple pieces of information. For instance, this command:
+
+```python
+logdir.readme(date=True, git_commit=True)
+```
+
+Will create something like:
+
+```md
+# My Experiment
+
+- Date: 2020-10-04 23:04:05
+- Git Commit: e3rftyt543rt5y67jhtgr4yhju
 ```

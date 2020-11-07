@@ -8,10 +8,12 @@ __all__ = [
 import datetime
 import json
 import pickle
+import warnings
 from collections import namedtuple
 from pathlib import Path
 
 import toml
+from dulwich.repo import Repo
 from ruamel import yaml
 
 
@@ -21,9 +23,9 @@ class LogDir:
     Creates a logging directory on startup; comes with a handful of other handy
     methods.
 
-    [logdir.LogDir.add_readme][]
-
     Attributes:
+        name (str): The name passed in at initialization time.
+        datetime (datetime.datetime): Date and time of this class's creation.
         rootdir (pathlib.Path): The root directory for log directories.
         logdir (pathlib.Path): The log directory itself.
     """
@@ -38,18 +40,21 @@ class LogDir:
         `2020-02-14_18:01:45_my-logging-dir`.
 
         Args:
-            name (str or pathlib.Path): Customizable part of the logging
-                directory name, e.g. `My cool experiment`
+            name (str): Customizable part of the logging directory name, e.g.
+                `My cool experiment`
             rootdir (str or pathlib.Path): Root directory for all logging
                 directories, e.g. `./logs/`
         """
+        self.name = name
+
         # Create the rootdir.
         self.rootdir = Path(rootdir)
         if not self.rootdir.exists():
             self.rootdir.mkdir(parents=True)
 
         # Create the logdir.
-        dirname = (datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_" +
+        self.datetime = datetime.datetime.now()
+        dirname = (self.datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
                    name.lower().replace("_", "-").replace(" ", "-"))
         self.logdir = self.rootdir / Path(dirname)
         self.logdir.mkdir()
@@ -110,11 +115,11 @@ class LogDir:
         Args:
             data (dict or list): Dictionary to save.
             filename (str or pathlib.Path): The name of the file; we will create
-                it under the logdir using [pfile][logdir.LogDir.pfile].
+                it under the logdir using [pfile][logdir.LogDir.pfile]. If the
+                filetype is unsupported, we will default to pickle and raise a
+                warning.
         Returns:
             pathlib.path: Full path to the config file.
-        Raises:
-            RuntimeError: An unsupported filetype was passed into `filename`.
         """
         filepath = self.pfile(filename)
 
@@ -128,10 +133,52 @@ class LogDir:
         elif ext == "toml":
             with filepath.open("w") as file:
                 toml.dump(data, file)
-        elif ext in ("pkl", "pickle"):
+        else:
+            # Pickle is default if file extension cannot be identified.
             with filepath.open("wb") as file:
                 pickle.dump(data, file)
-        else:
-            raise RuntimeError(f"Unsupported filetype '{ext}'")
+            if ext not in ("pkl", "pickle"):
+                warnings.warn(f"Filetype {ext} not found. Used pickle instead.")
 
         return filepath
+
+    def readme(self, date=True, git_commit=False, git_path=".", info=()):
+        """Adds a README.md with useful info.
+
+        The README consists of the name of the directory (passed in at init
+        time), followed by a bulleted list with various pieces of info.
+
+        Args:
+            date (bool): Add the date and time in the bulleted list of info.
+            git_commit (bool): Add the current git commit hash in the bulleted
+                list of info.
+            git_path (str or pathlib.Path): The path to the git repo (i.e. a
+                directory that contains `.git`). Only applicable if `git_commit`
+                is True. If the path given is not to a Git repo, a warning is
+                issued, and the Git Commit is replaced with `"(no repo found)"`
+            info (list of str): A list of additional bullets to add in the
+                README.
+        Returns:
+            pathlib.path: Full path to the README.
+        """
+        readme_path = self.pfile("README.md")
+        with readme_path.open("w") as file:
+            lines = [f"# {self.name}", ""]
+
+            if date:
+                date_str = self.datetime.strftime("%Y-%m-%d %H:%M:%S")
+                lines.append(f"- Date: {date_str}")
+            if git_commit:
+                git_path = Path(git_path)
+                if (git_path / ".git").exists():
+                    repo = Repo(str(git_path))
+                    commit_hash = repo.head()
+                else:
+                    warnings.warn("No Git repo found")
+                    commit_hash = "(no repo found)"
+                lines.append(f"- Git Commit: {commit_hash}")
+
+            lines.extend(map(lambda s: f"- {s}", info))
+            file.write("\n".join(lines) + "\n")
+
+            return readme_path
