@@ -44,7 +44,7 @@ extras_require = {
 
 setup(
     name="logdir",
-    version="0.5.0",
+    version="0.6.0",
     author="Bryon Tjanaka",
     author_email="bryon@btjanaka.net",
     description="A utility for managing logging directories.",
