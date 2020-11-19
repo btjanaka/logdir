@@ -57,6 +57,23 @@ def test_creates_nested_file(tmp_path):
     assert Path(file).exists()
 
 
+@freeze_time(TIME)
+def test_creates_dir(tmp_path):
+    logdir = LogDir("My Experiment", tmp_path)
+    dirname = logdir.dir("mydir")
+    assert Path(dirname) == (tmp_path / f"{TIME_STR}_my-experiment" / "mydir")
+    assert Path(dirname).exists()
+
+
+@freeze_time(TIME)
+def test_creates_nested_dir(tmp_path):
+    logdir = LogDir("My Experiment", tmp_path)
+    dirname = logdir.dir("newdir/mydir")
+    assert Path(dirname) == (tmp_path / f"{TIME_STR}_my-experiment" / "newdir" /
+                             "mydir")
+    assert Path(dirname).exists()
+
+
 @pytest.mark.parametrize("ext,load,mode", [
     ("json", json.load, "r"),
     ("yml", yaml.safe_load, "r"),

@@ -108,6 +108,38 @@ class LogDir:
         filename.touch()
         return filename
 
+    def dir(self, dirname):
+        """Returns a string path to the given directory.
+
+        The directory, and any intermediate directories, are created if they do
+        not exist.
+
+        Example:
+            ```python
+            logdir = LogDir("logdir")
+            logdir.filepath("mydir") # "..._logdir/mydir/"
+            ```
+
+        Args:
+            dirname (str or pathlib.Path): The name of the directory.
+        Returns:
+            str: Path to the new directory in the logging directory.
+        """
+        return str(self.pdir(dirname))
+
+    def pdir(self, dirname):
+        """Same as [dir][logdir.LogDir.dir], but returns pathlib.Path.
+
+        Args:
+            dirname (str or pathlib.Path): The name of the directory.
+        Returns:
+            pathlib.Path: Path to the new directory in the logging directory.
+        """
+        dirname = self._logdir / Path(dirname)
+        if not dirname.exists():
+            dirname.mkdir(parents=True)
+        return dirname
+
     def save_data(self, data, filename):
         """Saves data to `filename` in the log directory.
 
