@@ -22,15 +22,9 @@ class LogDir:
 
     Creates a logging directory on startup; comes with a handful of other handy
     methods.
-
-    Attributes:
-        name (str): The name passed in at initialization time.
-        datetime (datetime.datetime): Date and time of this class's creation.
-        rootdir (pathlib.Path): The root directory for log directories.
-        logdir (pathlib.Path): The log directory itself.
     """
 
-    def __init__(self, name, rootdir="logs"):
+    def __init__(self, name, rootdir="./logs"):
         """Initializes by creating the logging directory.
 
         The directory is created under `rootdir` (which is created if it does
@@ -45,19 +39,34 @@ class LogDir:
             rootdir (str or pathlib.Path): Root directory for all logging
                 directories, e.g. `./logs/`
         """
-        self.name = name
+        self._name = name
 
         # Create the rootdir.
-        self.rootdir = Path(rootdir)
-        if not self.rootdir.exists():
-            self.rootdir.mkdir(parents=True)
+        rootdir = Path(rootdir)
+        if not rootdir.exists():
+            rootdir.mkdir(parents=True)
 
         # Create the logdir.
-        self.datetime = datetime.datetime.now()
-        dirname = (self.datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
+        self._datetime = datetime.datetime.now()
+        dirname = (self._datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
                    name.lower().replace("_", "-").replace(" ", "-"))
-        self.logdir = self.rootdir / Path(dirname)
-        self.logdir.mkdir()
+        self._logdir = rootdir / Path(dirname)
+        self._logdir.mkdir()
+
+    @property
+    def name(self) -> str:
+        """The name passed in at initialization time."""
+        return self._name
+
+    @property
+    def datetime(self) -> datetime.datetime:
+        """Date and time of this class's creation."""
+        return self._datetime
+
+    @property
+    def logdir(self) -> Path:
+        """Path to the directory itself."""
+        return self._logdir
 
     def file(self, filename):
         """Returns a string path to the given file.
@@ -93,7 +102,7 @@ class LogDir:
         Returns:
             pathlib.Path: Path to the new file in the logging directory.
         """
-        filename = self.logdir / Path(filename)
+        filename = self._logdir / Path(filename)
         if not filename.parent.exists():
             filename.parent.mkdir(parents=True)
         filename.touch()
@@ -163,10 +172,10 @@ class LogDir:
         """
         readme_path = self.pfile("README.md")
         with readme_path.open("w") as file:
-            lines = [f"# {self.name}", ""]
+            lines = [f"# {self._name}", ""]
 
             if date:
-                date_str = self.datetime.strftime("%Y-%m-%d %H:%M:%S")
+                date_str = self._datetime.strftime("%Y-%m-%d %H:%M:%S")
                 lines.append(f"- Date: {date_str}")
             if git_commit:
                 git_path = Path(git_path)
