@@ -154,7 +154,8 @@ class LogDir:
         - Pickle (`*.pkl`, `*.pickle`)
 
         Args:
-            data (dict or list): Dictionary to save.
+            data (object): Data to save. Typically a dict or list for JSON,
+                YAML, and TOML, and any pickle-able object for pickle.
             filename (str or pathlib.Path): The name of the file; we will create
                 it under the logdir using [pfile][logdir.LogDir.pfile]. If the
                 filetype is unsupported, we will default to pickle and raise a
