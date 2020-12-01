@@ -159,7 +159,6 @@ class LogDir:
             dest (str or pathlib.Path): Destination location _within the
                 logging directory_. Intermediate directories are created.
         """
-        print(self.file(dest))
         shutil.copy(str(src), self.file(dest))
 
     def save_data(self, data, filename):
