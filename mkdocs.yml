@@ -24,10 +24,11 @@ markdown_extensions:
 theme:
   name: material
   palette:
-    primary: deep purple
+    primary: "e62020"
     accent: indigo
   icon:
     logo: material/folder
   favicon: img/favicon.svg
 extra_css:
+  - css/custom.css
   - css/mkdocstrings.css
