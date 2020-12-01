@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 import toml
+from freezegun import freeze_time
 from ruamel import yaml
 
-from freezegun import freeze_time
 from logdir import LogDir  # isort: skip
 
 # pylint: disable = missing-function-docstring, redefined-outer-name
@@ -72,6 +72,19 @@ def test_creates_nested_dir(tmp_path):
     assert Path(dirname) == (tmp_path / f"{TIME_STR}_my-experiment" / "newdir" /
                              "mydir")
     assert Path(dirname).exists()
+
+
+def test_copy(tmp_path):
+    logdir = LogDir("My Experiment", tmp_path / "logs")
+    src = tmp_path / "new.txt"
+    with src.open("w") as file:
+        file.write("Hello World")
+    logdir.copy(src, "newdir/new.txt")
+
+    full_dest = Path(logdir.logdir / "newdir" / "new.txt")
+    assert full_dest.is_file()
+    with full_dest.open("r") as file:
+        assert file.read() == "Hello World"
 
 
 @pytest.mark.parametrize("ext,load,mode", [

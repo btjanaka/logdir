@@ -8,6 +8,7 @@ __all__ = [
 import datetime
 import json
 import pickle
+import shutil
 import warnings
 from collections import namedtuple
 from pathlib import Path
@@ -139,6 +140,27 @@ class LogDir:
         if not dirname.exists():
             dirname.mkdir(parents=True)
         return dirname
+
+    def copy(self, src, dest):
+        """Copies a file into the logging directory.
+
+        Example:
+            The following copies `foobar.txt` in the current directory to
+            `new/foobar2.txt` _within the logging directory_.
+            ```python
+            logdir = LogDir("logdir")
+            logdir.copy("foobar.txt", "new/foobar2.txt")
+            ```
+
+        Args:
+            src (str or pathlib.Path): The source file. It is evaluated relative
+                to the current working directory of the program (it could also
+                be absolute).
+            dest (str or pathlib.Path): Destination location _within the
+                logging directory_. Intermediate directories are created.
+        """
+        print(self.file(dest))
+        shutil.copy(str(src), self.file(dest))
 
     def save_data(self, data, filename):
         """Saves data to `filename` in the log directory.
