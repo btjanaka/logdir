@@ -24,8 +24,8 @@ markdown_extensions:
 theme:
   name: material
   palette:
-    primary: "e62020"
-    accent: indigo
+    # primary color defined in docs/css/custom.css
+    accent: blue
   icon:
     logo: material/folder
   favicon: img/favicon.svg
