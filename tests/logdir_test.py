@@ -1,4 +1,5 @@
 """Tests for logdir."""
+import datetime
 import json
 import pickle
 from pathlib import Path
@@ -27,17 +28,40 @@ def data():
 
 
 @freeze_time(TIME)
+def test_properties_correct(tmp_path):
+    logdir = LogDir("My Experiment", tmp_path)
+    assert logdir.name == "My Experiment"
+    assert logdir.datetime == datetime.datetime.fromisoformat(TIME)
+    assert logdir.logdir == tmp_path / f"{TIME_STR}_my-experiment"
+
+
+@freeze_time(TIME)
 def test_creates_dir_on_init(tmp_path):
     LogDir("My Experiment", tmp_path)
     expected_path = tmp_path / f"{TIME_STR}_my-experiment"
-    assert expected_path.exists()
+    assert expected_path.is_dir()
 
 
 @freeze_time(TIME)
 def test_creates_nested_dir_on_init(tmp_path):
     LogDir("My Experiment", tmp_path / "logs")
     expected_path = tmp_path / "logs" / f"{TIME_STR}_my-experiment"
-    assert expected_path.exists()
+    assert expected_path.is_dir()
+
+
+@freeze_time(TIME)
+def test_creates_custom_dir_on_init(tmp_path):
+    LogDir("My Experiment", tmp_path, dirname="customdir")
+    custom_path = tmp_path / "customdir"
+    assert custom_path.is_dir()
+
+
+@freeze_time(TIME)
+def test_reuses_existing_dir(tmp_path):
+    custom_path = tmp_path / "customdir"
+    custom_path.mkdir()
+    LogDir("My Experiment", tmp_path, dirname="customdir")
+    assert custom_path.is_dir()
 
 
 @freeze_time(TIME)
@@ -45,7 +69,7 @@ def test_creates_file(tmp_path):
     logdir = LogDir("My Experiment", tmp_path)
     file = logdir.file("file.txt")
     assert Path(file) == (tmp_path / f"{TIME_STR}_my-experiment" / "file.txt")
-    assert Path(file).exists()
+    assert Path(file).is_file()
 
 
 @freeze_time(TIME)
@@ -54,7 +78,7 @@ def test_creates_nested_file(tmp_path):
     file = logdir.file("newdir/file.txt")
     assert Path(file) == (tmp_path / f"{TIME_STR}_my-experiment" / "newdir" /
                           "file.txt")
-    assert Path(file).exists()
+    assert Path(file).is_file()
 
 
 @freeze_time(TIME)
@@ -62,7 +86,7 @@ def test_creates_dir(tmp_path):
     logdir = LogDir("My Experiment", tmp_path)
     dirname = logdir.dir("mydir")
     assert Path(dirname) == (tmp_path / f"{TIME_STR}_my-experiment" / "mydir")
-    assert Path(dirname).exists()
+    assert Path(dirname).is_dir()
 
 
 @freeze_time(TIME)
@@ -71,7 +95,7 @@ def test_creates_nested_dir(tmp_path):
     dirname = logdir.dir("newdir/mydir")
     assert Path(dirname) == (tmp_path / f"{TIME_STR}_my-experiment" / "newdir" /
                              "mydir")
-    assert Path(dirname).exists()
+    assert Path(dirname).is_dir()
 
 
 def test_copy(tmp_path):
@@ -111,11 +135,9 @@ def test_save_data_goes_to_pkl_with_unknown_ext(data, tmp_path):
             assert pickle.load(file) == data
 
 
-# TODO: How to test readme() _with_ a git directory?
-
-
 @freeze_time(TIME)
 def test_readme_writes_correct_info_with_no_git_dir(tmp_path):
+    # Currently unable to test with a real git directory.
     logdir = LogDir("My Experiment", tmp_path)
     with pytest.warns(UserWarning):
         filepath = logdir.readme(date=True,

@@ -25,20 +25,27 @@ class LogDir:
     methods.
     """
 
-    def __init__(self, name, rootdir="./logs"):
+    def __init__(self, name, rootdir="./logs", dirname=None):
         """Initializes by creating the logging directory.
 
         The directory is created under `rootdir` (which is created if it does
         not exist). Logging directory is named with the date, followed by the
         time, followed by the given `name` in lowercase with spaces and
         underscores replaced with dashes, for instance
-        `2020-02-14_18:01:45_my-logging-dir`.
+        `2020-02-14_18-01-45_my-logging-dir`.
+
+        You can also choose to use a custom name by passing in the `dirname`
+        argument.
 
         Args:
-            name (str): Customizable part of the logging directory name, e.g.
-                `My cool experiment`
+            name (str): Name to associate with this directory. This is used in
+                creating the logging directory name. It is also used in places
+                like the README.
             rootdir (str or pathlib.Path): Root directory for all logging
                 directories, e.g. `./logs/`
+            dirname (str or pathlib.Path): If passed in, this directory _within_
+                `rootdir` will be used instead of automatically generating a
+                name. This directory can be one that already exists.
         """
         self._name = name
 
@@ -49,10 +56,12 @@ class LogDir:
 
         # Create the logdir.
         self._datetime = datetime.datetime.now()
-        dirname = (self._datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
-                   name.lower().replace("_", "-").replace(" ", "-"))
+        if dirname is None:
+            dirname = (self._datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
+                       name.lower().replace("_", "-").replace(" ", "-"))
         self._logdir = rootdir / Path(dirname)
-        self._logdir.mkdir()
+        if not self._logdir.exists():
+            self._logdir.mkdir()
 
     @property
     def name(self) -> str:
