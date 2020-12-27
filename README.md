@@ -17,7 +17,7 @@ pip install logdir
 To install from source, clone this repo, cd into it, and run:
 
 ```bash
-pip install -e .
+pip install .
 ```
 
 ## Usage

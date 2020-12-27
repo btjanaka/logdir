@@ -1,0 +1,47 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "logdir"
+version = "0.8.0"
+description = "A utility for managing logging directories."
+authors = ["Bryon Tjanaka <bryon@btjanaka.net>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://logdir.btjanka.net"
+repository = "https://github.com/btjanaka/logdir"
+documentation = "https://logdir.btjanaka.net"
+keywords = ["log", "logging", "utilities"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Topic :: System :: Logging",
+  "Topic :: Utilities",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+"ruamel.yaml" = ">0.15"
+toml = ">=0.10"
+dulwich = ">=0.20.0"
+
+[tool.poetry.dev-dependencies]
+isort = "^5.6.4"
+yapf = "^0.30.0"
+pylint = "^2.6.0"
+mkdocs = "1.1.2"
+mkdocs-material = "6.1.0"
+mkdocstrings = "0.13.6"
+pymdown-extensions = "8.0.1"
+pygments = "2.7.2"
+pytest = "6.1.2"
+pytest-cov = "2.10.1"
+freezegun = "1.0.0"
+bump2version = "0.5.11"
+
+[tool.pytest.ini_options]
+addopts = "-v --cov-report term-missing --cov=logdir tests/"
