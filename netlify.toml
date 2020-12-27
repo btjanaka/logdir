@@ -1,7 +1,7 @@
 [build]
 publish="site"
 command="""
-pip install .
 pip install poetry
+poetry install
 poetry run mkdocs build -d site
 """
