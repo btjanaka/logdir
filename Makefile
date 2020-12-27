@@ -16,7 +16,7 @@ help:
 	@echo "\033[0;1mCommands\033[0m"
 	@grep -E '^[.a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[34;1m%-30s\033[0m %s\n", $$1, $$2}'
 
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+clean: clean-build clean-pyc clean-test ## clean everything except for site
 
 clean-build: ## remove build artifacts
 	rm -fr dist/
@@ -56,5 +56,5 @@ dist: clean ## builds source and wheel package
 	poetry build
 	ls -l dist
 
-install: clean ## install the package to the active Python's site-packages in editable mode
-	pip install -e .
+install: clean ## install to the active Python's site-packages
+	pip install .
