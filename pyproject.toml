@@ -42,6 +42,7 @@ pytest = "6.1.2"
 pytest-cov = "2.10.1"
 freezegun = "1.0.0"
 bump2version = "0.5.11"
+check-wheel-contents = "^0.2.0"
 
 [tool.pytest.ini_options]
 addopts = "-v --cov-report term-missing --cov=logdir tests/"

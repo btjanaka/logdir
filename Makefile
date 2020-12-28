@@ -49,12 +49,13 @@ docs: clean-site ## generate HTML documentation, including API docs
 servedocs: ## compile the docs watching for changes
 	poetry run mkdocs serve
 
-release: ## package and upload a release
-	poetry publish --build
+release: dist ## package and upload a release
+	poetry publish
 
 dist: clean ## builds source and wheel package
 	poetry build
 	ls -l dist
+	poetry run check-wheel-contents dist/*.whl
 
 install: clean ## install to the active Python's site-packages
 	pip install .
