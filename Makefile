@@ -54,7 +54,13 @@ release: dist ## package and upload a release
 
 dist: clean ## builds source and wheel package
 	poetry build
+	@echo "============================================================"
 	ls -l dist
+	@echo "============================================================"
+	unzip -l dist/*.whl
+	@echo "============================================================"
+	tar -ztvf dist/*.tar.gz
+	@echo "============================================================"
 	poetry run check-wheel-contents dist/*.whl
 
 install: clean ## install to the active Python's site-packages

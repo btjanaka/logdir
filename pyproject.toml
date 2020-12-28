@@ -22,6 +22,7 @@ classifiers = [
   "Topic :: System :: Logging",
   "Topic :: Utilities",
 ]
+exclude = ["setup.cfg"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
