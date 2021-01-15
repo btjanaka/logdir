@@ -244,7 +244,7 @@ class LogDir:
                 git_path = Path(git_path)
                 if (git_path / ".git").exists():
                     repo = Repo(str(git_path))
-                    commit_hash = repo.head()
+                    commit_hash = repo.head().decode("utf-8")
                 else:
                     warnings.warn("No Git repo found")
                     commit_hash = "(no repo found)"
