@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "logdir"
-version = "0.9.0"
+version = "0.9.1"
 description = "A utility for managing logging directories."
 authors = ["Bryon Tjanaka <bryon@btjanaka.net>"]
 license = "MIT"
