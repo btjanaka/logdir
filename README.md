@@ -20,6 +20,9 @@ To install from source, clone this repo, cd into it, and run:
 pip install .
 ```
 
+logdir is tested on Python 3.7+. Earlier Python versions may work but are not
+guaranteed.
+
 ## Usage
 
 If your experiment is called `My Experiment`, you can create a logging directory
