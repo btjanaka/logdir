@@ -25,7 +25,7 @@ class LogDir:
     methods.
     """
 
-    def __init__(self, name, rootdir="./logs", dirname=None):
+    def __init__(self, name, rootdir="./logs", custom_dir=None):
         """Initializes by creating the logging directory.
 
         The directory is created under `rootdir` (which is created if it does
@@ -34,8 +34,8 @@ class LogDir:
         underscores replaced with dashes, for instance
         `2020-02-14_18-01-45_my-logging-dir`.
 
-        You can also choose to use a custom name by passing in the `dirname`
-        argument.
+        You can also choose to use a custom directory by passing in
+        `custom_dir`.
 
         Args:
             name (str): Name to associate with this directory. This is used in
@@ -43,25 +43,27 @@ class LogDir:
                 like the README.
             rootdir (str or pathlib.Path): Root directory for all logging
                 directories, e.g. `./logs/`
-            dirname (str or pathlib.Path): If passed in, this directory _within_
-                `rootdir` will be used instead of automatically generating a
-                name. This directory can be one that already exists.
+            custom_dir (str or pathlib.Path): If passed in, this directory
+                will be used instead of automatically generating one in
+                `rootdir`. This directory can be one that already exists. If it
+                does not exist, it will be created.
         """
         self._name = name
 
-        # Create the rootdir.
-        rootdir = Path(rootdir)
-        if not rootdir.exists():
-            rootdir.mkdir(parents=True)
-
-        # Create the logdir.
         self._datetime = datetime.datetime.now()
-        if dirname is None:
+        if custom_dir is None:
+            # Automatically generate directory in `rootdir`.
+            rootdir = Path(rootdir)
             dirname = (self._datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
                        name.lower().replace("_", "-").replace(" ", "-"))
-        self._logdir = rootdir / Path(dirname)
+            self._logdir = rootdir / Path(dirname)
+        else:
+            # Use custom directory.
+            self._logdir = Path(custom_dir)
+
         if not self._logdir.exists():
-            self._logdir.mkdir()
+            # Creates intermediate directories as well if needed.
+            self._logdir.mkdir(parents=True)
 
     @property
     def name(self) -> str:
