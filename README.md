@@ -14,6 +14,12 @@ To install from PyPI, run:
 pip install logdir
 ```
 
+To install from Conda, run:
+
+```bash
+conda install -c conda-forge logdir
+```
+
 To install from source, clone this repo, cd into it, and run:
 
 ```bash
