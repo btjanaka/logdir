@@ -79,10 +79,13 @@ class LogDir:
         """Path to the directory itself."""
         return self._logdir
 
-    def file(self, filename, touch=True, touch_inter=True):
+    def file(self, filename, touch=False, touch_inter=True):
         """Returns a string path to the given file.
 
         By default, intermediate directories are created if they do not exist.
+        However, the file itself it not created (this helps avoid confusing
+        situations where one is checking for the existence of a file). This can
+        be changed by passing in `touch=True`.
 
         Example:
             Basic usage:
@@ -107,7 +110,7 @@ class LogDir:
         """
         return str(self.pfile(filename, touch, touch_inter))
 
-    def pfile(self, filename, touch=True, touch_inter=True):
+    def pfile(self, filename, touch=False, touch_inter=True):
         """Same as [file][logdir.LogDir.file], but returns pathlib.Path.
 
         See [file][logdir.LogDir.file] for args.
@@ -123,10 +126,12 @@ class LogDir:
             filename.touch()
         return filename
 
-    def dir(self, dirname, touch=True, touch_inter=True):
+    def dir(self, dirname, touch=False, touch_inter=True):
         """Returns a string path to the given directory.
 
         By default, intermediate directories are created if they do not exist.
+        However the directory itself is not created. This can be changed by
+        passing in `touch=True`.
 
         Example:
             ```python
@@ -145,7 +150,7 @@ class LogDir:
         """
         return str(self.pdir(dirname, touch, touch_inter))
 
-    def pdir(self, dirname, touch=True, touch_inter=True):
+    def pdir(self, dirname, touch=False, touch_inter=True):
         """Same as [dir][logdir.LogDir.dir], but returns pathlib.Path.
 
         See [dir][logdir.LogDir.dir] for args.
