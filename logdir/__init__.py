@@ -34,8 +34,7 @@ class LogDir:
         underscores replaced with dashes, for instance
         `2020-02-14_18-01-45_my-logging-dir`.
 
-        You can also choose to use a custom directory by passing in
-        `custom_dir`.
+        A custom directory may also be passed in via `custom_dir`.
 
         Args:
             name (str): Name to associate with this directory. This is used in
@@ -80,13 +79,10 @@ class LogDir:
         """Path to the directory itself."""
         return self._logdir
 
-    def file(self, filename):
+    def file(self, filename, touch=True, touch_inter=True):
         """Returns a string path to the given file.
 
-        Intermediate directories are created if they do not exist.
-
-        The file is automatically created, so even if you do not use it, there
-        will still be an empty file in the directory.
+        By default, intermediate directories are created if they do not exist.
 
         Example:
             Basic usage:
@@ -101,30 +97,36 @@ class LogDir:
             ```
         Args:
             filename (str or pathlib.Path): The name of the file.
+            touch (bool): Whether to automatically touch the file so that an
+                empty file exists even if it is not opened.
+            touch_inter (bool): Whether to automatically create intermediate
+                directories. If this option is set to False, `touch` is also set
+                to False.
         Returns:
             str: Path to the new file in the logging directory.
         """
-        return str(self.pfile(filename))
+        return str(self.pfile(filename, touch, touch_inter))
 
-    def pfile(self, filename):
+    def pfile(self, filename, touch=True, touch_inter=True):
         """Same as [file][logdir.LogDir.file], but returns pathlib.Path.
 
-        Args:
-            filename (str or pathlib.Path): The name of the file.
+        See [file][logdir.LogDir.file] for args.
+
         Returns:
             pathlib.Path: Path to the new file in the logging directory.
         """
+        touch = False if not touch_inter else touch
         filename = self._logdir / Path(filename)
-        if not filename.parent.exists():
+        if touch_inter and not filename.parent.exists():
             filename.parent.mkdir(parents=True)
-        filename.touch()
+        if touch and not filename.exists():
+            filename.touch()
         return filename
 
-    def dir(self, dirname):
+    def dir(self, dirname, touch=True, touch_inter=True):
         """Returns a string path to the given directory.
 
-        The directory, and any intermediate directories, are created if they do
-        not exist.
+        By default, intermediate directories are created if they do not exist.
 
         Example:
             ```python
@@ -134,22 +136,29 @@ class LogDir:
 
         Args:
             dirname (str or pathlib.Path): The name of the directory.
+            touch (bool): Whether to automatically create the directory.
+            touch_inter (bool): Whether to automatically create intermediate
+                directories. If this option is set to False, `touch` is also set
+                to False.
         Returns:
             str: Path to the new directory in the logging directory.
         """
-        return str(self.pdir(dirname))
+        return str(self.pdir(dirname, touch, touch_inter))
 
-    def pdir(self, dirname):
+    def pdir(self, dirname, touch=True, touch_inter=True):
         """Same as [dir][logdir.LogDir.dir], but returns pathlib.Path.
 
-        Args:
-            dirname (str or pathlib.Path): The name of the directory.
+        See [dir][logdir.LogDir.dir] for args.
+
         Returns:
             pathlib.Path: Path to the new directory in the logging directory.
         """
+        touch = False if not touch_inter else touch
         dirname = self._logdir / Path(dirname)
-        if not dirname.exists():
-            dirname.mkdir(parents=True)
+        if touch_inter and not dirname.parent.exists():
+            dirname.parent.mkdir(parents=True)
+        if touch and not dirname.exists():
+            dirname.mkdir()
         return dirname
 
     def copy(self, src, dest):

@@ -27,6 +27,16 @@ def data():
     }
 
 
+@pytest.fixture(params=[True, False])
+def touch(request):
+    return request.param
+
+
+@pytest.fixture(params=[True, False])
+def touch_inter(request):
+    return request.param
+
+
 @freeze_time(TIME)
 def test_properties_correct(tmp_path):
     logdir = LogDir("My Experiment", tmp_path)
@@ -70,37 +80,53 @@ def test_reuses_existing_dir(tmp_path):
 
 
 @freeze_time(TIME)
-def test_creates_file(tmp_path):
+def test_file(tmp_path, touch):
     logdir = LogDir("My Experiment", tmp_path)
-    file = logdir.file("file.txt")
+    file = logdir.file("file.txt", touch)
     assert Path(file) == (tmp_path / f"{TIME_STR}_my-experiment" / "file.txt")
-    assert Path(file).is_file()
+    assert Path(file).is_file() if touch else (not Path(file).is_file())
 
 
 @freeze_time(TIME)
-def test_creates_nested_file(tmp_path):
+def test_nested_file(tmp_path, touch, touch_inter):
     logdir = LogDir("My Experiment", tmp_path)
-    file = logdir.file("newdir/file.txt")
+    file = logdir.file("newdir/file.txt", touch, touch_inter)
     assert Path(file) == (tmp_path / f"{TIME_STR}_my-experiment" / "newdir" /
                           "file.txt")
-    assert Path(file).is_file()
+
+    if not touch_inter:
+        assert not Path(file).parent.is_dir() and not Path(file).is_file()
+    if touch_inter:
+        if touch:
+            # Implies the parent dir also exists.
+            assert Path(file).is_file()
+        else:
+            assert Path(file).parent.is_dir() and not Path(file).is_file()
 
 
 @freeze_time(TIME)
-def test_creates_dir(tmp_path):
+def test_dir(tmp_path, touch):
     logdir = LogDir("My Experiment", tmp_path)
-    dirname = logdir.dir("mydir")
+    dirname = logdir.dir("mydir", touch)
     assert Path(dirname) == (tmp_path / f"{TIME_STR}_my-experiment" / "mydir")
-    assert Path(dirname).is_dir()
+    assert Path(dirname).is_dir() if touch else (not Path(dirname).is_dir())
 
 
 @freeze_time(TIME)
-def test_creates_nested_dir(tmp_path):
+def test_nested_dir(tmp_path, touch, touch_inter):
     logdir = LogDir("My Experiment", tmp_path)
-    dirname = logdir.dir("newdir/mydir")
+    dirname = logdir.dir("newdir/mydir", touch, touch_inter)
     assert Path(dirname) == (tmp_path / f"{TIME_STR}_my-experiment" / "newdir" /
                              "mydir")
-    assert Path(dirname).is_dir()
+
+    if not touch_inter:
+        assert not Path(dirname).parent.is_dir() and not Path(dirname).is_dir()
+    if touch_inter:
+        if touch:
+            # Implies the parent dir also exists.
+            assert Path(dirname).is_dir()
+        else:
+            assert Path(dirname).parent.is_dir() and not Path(dirname).is_dir()
 
 
 def test_copy(tmp_path):
