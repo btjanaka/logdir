@@ -229,7 +229,8 @@ class LogDir:
                 json.dump(data, file)
         elif ext in ("yml", "yaml"):
             with filepath.open("w") as file:
-                yaml.dump(data, file)
+                yaml_worker = yaml.YAML(typ="unsafe")
+                yaml_worker.dump(data, file)
         elif ext == "toml":
             with filepath.open("w") as file:
                 toml.dump(data, file)

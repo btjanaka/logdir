@@ -151,10 +151,15 @@ def test_copy(tmp_path):
         assert file.read() == "Hello World"
 
 
+def yaml_load(file):
+    yaml_worker = yaml.YAML(typ="safe")
+    return yaml_worker.load(file)
+
+
 @pytest.mark.parametrize("ext,load,mode", [
     ("json", json.load, "r"),
-    ("yml", yaml.safe_load, "r"),
-    ("yaml", yaml.safe_load, "r"),
+    ("yml", yaml_load, "r"),
+    ("yaml", yaml_load, "r"),
     ("toml", toml.load, "r"),
     ("pkl", pickle.load, "rb"),
     ("pickle", pickle.load, "rb"),
