@@ -37,7 +37,7 @@ for it with:
 ```python
 from logdir import LogDir
 
-logdir = LogDir("My Experiment")
+logdir = LogDir("My Experiment Dir")
 ```
 
 This will create a logging directory of the form
@@ -53,7 +53,8 @@ with logdir.pfile("new.txt").open() as file:
     file.write("Hello World!")
 ```
 
-This takes advantage of the [pfile()](/api/#logdir.LogDir.pfile) method, which
+This takes advantage of the
+[pfile()](https://logdir.btjanaka.net/api/#logdir.LogDir.pfile) method, which
 creates a `pathlib.Path` to the new file. It also uses `pathlib.Path.open()`.
 
 `pfile()` will also create intermediate directories, so this will work even if
@@ -64,15 +65,18 @@ with logdir.pfile("foo/bar/new.txt").open() as file:
     file.write("Hello World!")
 ```
 
-There is also [save_data()](/api/#logdir.LogDir.save_data), which saves data to
-a file. JSON, YAML, TOML, and pickle files are currently supported.
+There is also
+[save_data()](https://logdir.btjanaka.net/api/#logdir.LogDir.save_data), which
+saves data to a file. JSON, YAML, TOML, and pickle files are currently
+supported.
 
 ```python
 logdir.save_data({"a": 1, "b": 2, "c": 3}, "file.json")
 ```
 
-Finally, [readme()](/api/#logdir.LogDir.readme) adds a README.md to the
-directory with multiple pieces of information. For instance, this command:
+Finally, [readme()](https://logdir.btjanaka.net/api/#logdir.LogDir.readme) adds
+a README.md to the directory with multiple pieces of information. For instance,
+this command:
 
 ```python
 logdir.readme(date=True, git_commit=True)
@@ -86,3 +90,5 @@ Will create something like:
 - Date: 2020-10-04 23:04:05
 - Git Commit: e3rftyt543rt5y67jhtgr4yhju
 ```
+
+See the [API](https://logdir.btjanaka.net/api) for all available methods.
