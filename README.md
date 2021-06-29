@@ -37,11 +37,11 @@ for it with:
 ```python
 from logdir import LogDir
 
-logdir = LogDir("My Experiment Dir")
+logdir = LogDir("My Experiment")
 ```
 
 This will create a logging directory of the form
-`./logs/YYYY-MM-DD_HH-MM-SS_my-experiment-dir`; you can change `./logs` by
+`./logs/YYYY-MM-DD_HH-MM-SS_my-experiment`; you can change `./logs` by
 passing in a second argument for the root directory when initializing `LogDir`,
 i.e. `LogDir("My Experiment", "./different-log-dir")`.
 
