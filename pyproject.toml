@@ -30,6 +30,7 @@ python = "^3.7"
 "ruamel.yaml" = ">0.15"
 toml = ">=0.10"
 dulwich = ">=0.20.0"
+"python-slugify" = ">=5.0.2"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.6.4"

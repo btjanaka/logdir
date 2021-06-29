@@ -71,6 +71,15 @@ def test_creates_nested_custom_dir_on_init(tmp_path):
     assert custom_path.is_dir()
 
 
+@freeze_time(TIME)
+def test_creates_with_slugify_kwargs(tmp_path):
+    LogDir("My Experiment",
+           tmp_path / "logs",
+           slugify_kwargs={"separator": "XXX"})
+    expected_path = tmp_path / "logs" / f"{TIME_STR}_myXXXexperiment"
+    assert expected_path.is_dir()
+
+
 def test_reuses_existing_dir(tmp_path):
     custom_path = tmp_path / "customdir"
     custom_path.mkdir()

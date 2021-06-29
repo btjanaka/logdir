@@ -13,6 +13,7 @@ import warnings
 from collections import namedtuple
 from pathlib import Path
 
+import slugify
 import toml
 from dulwich.repo import Repo
 from ruamel import yaml
@@ -25,14 +26,21 @@ class LogDir:
     methods.
     """
 
-    def __init__(self, name, rootdir="./logs", custom_dir=None):
+    def __init__(self,
+                 name,
+                 rootdir="./logs",
+                 custom_dir=None,
+                 slugify_kwargs=None):
         """Initializes by creating the logging directory.
 
         The directory is created under `rootdir` (which is created if it does
         not exist). Logging directory is named with the date, followed by the
-        time, followed by the given `name` in lowercase with spaces and
-        underscores replaced with dashes, for instance
+        time, followed by the slugified `name`. For example:
         `2020-02-14_18-01-45_my-logging-dir`.
+
+        `name` is slugified with
+        [python-slugify](https://github.com/un33k/python-slugify). Pass options
+        to `slugify` with `slugify_kwargs`.
 
         A custom directory may also be passed in via `custom_dir`.
 
@@ -46,6 +54,8 @@ class LogDir:
                 will be used instead of automatically generating one in
                 `rootdir`. This directory can be one that already exists. If it
                 does not exist, it will be created.
+            slugify_kwargs: kwargs for
+                [slugify](https://github.com/un33k/python-slugify#options).
         """
         self._name = name
 
@@ -53,8 +63,10 @@ class LogDir:
         if custom_dir is None:
             # Automatically generate directory in `rootdir`.
             rootdir = Path(rootdir)
+            slugify_kwargs = {} if slugify_kwargs is None else slugify_kwargs
+            name_slug = slugify.slugify(name, **slugify_kwargs)
             dirname = (self._datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
-                       name.lower().replace("_", "-").replace(" ", "-"))
+                       name_slug)
             self._logdir = rootdir / Path(dirname)
         else:
             # Use custom directory.
