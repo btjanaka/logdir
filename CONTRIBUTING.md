@@ -9,8 +9,27 @@ the repo, create the environment with
 poetry install
 ```
 
-The `Makefile` contains commands for common tasks, such as running tests
-(`make test`) and linting (`make lint`).
+The `Makefile` contains commands for common tasks.
+
+## Running Tests
+
+```bash
+make test
+```
+
+## Linting
+
+```bash
+make lint
+```
+
+## Shell
+
+This will activate a virtual environment with logdir's dependencies.
+
+```bash
+poetry shell
+```
 
 ## Documentation
 
@@ -34,8 +53,8 @@ To deploy, make sure the dev requirements are installed. Then run:
 make release
 ```
 
-Alternatively, once a version tag has been created with bump2version, push the
-commit and tag with
+Alternatively, mark a new version with `bump2version` (do this in a shell) and
+push the commit and tag with:
 
 ```bash
 git push
