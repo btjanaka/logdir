@@ -12,6 +12,7 @@ import shutil
 import warnings
 from collections import namedtuple
 from pathlib import Path
+from uuid import uuid4
 
 import slugify
 import toml
@@ -30,19 +31,24 @@ class LogDir:
                  name,
                  rootdir="./logs",
                  custom_dir=None,
-                 slugify_kwargs=None):
+                 slugify_kwargs=None,
+                 uuid=False):
         """Initializes by creating the logging directory.
 
         The directory is created under `rootdir` (which is created if it does
         not exist). Logging directory is named with the date, followed by the
-        time, followed by the slugified `name`. For example:
-        `2020-02-14_18-01-45_my-logging-dir`.
+        time, followed by the slugified `name`, followed by a UUID (if
+        `uuid=True`). For example:
+
+        ```
+        2020-02-14_18-01-45_my-logging-dir_16fd2706-8baf-433b-82eb-8c7fada847da
+        ```
+
+        A custom directory may also be passed in via `custom_dir`.
 
         `name` is slugified with
         [python-slugify](https://github.com/un33k/python-slugify). Pass options
         to `slugify` with `slugify_kwargs`.
-
-        A custom directory may also be passed in via `custom_dir`.
 
         Args:
             name (str): Name to associate with this directory. This is used in
@@ -56,6 +62,15 @@ class LogDir:
                 does not exist, it will be created.
             slugify_kwargs: kwargs for
                 [slugify](https://github.com/un33k/python-slugify#options).
+            uuid (bool): If passed in, generates a
+                [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+                and appends it to the directory name, i.e. `..._[UUID]`. This
+                can be useful if you are generating multiple logging directories
+                at the same time -- by default, directories will have name
+                conflicts if they are generated during the same second. The
+                UUID is generated randomly with
+                [uuid4](https://docs.python.org/3/library/uuid.html#uuid.uuid4).
+                Ignored when `custom_dir` is passed in.
         """
         self._name = name
 
@@ -65,8 +80,9 @@ class LogDir:
             rootdir = Path(rootdir)
             slugify_kwargs = {} if slugify_kwargs is None else slugify_kwargs
             name_slug = slugify.slugify(name, **slugify_kwargs)
+            uuid = f"_{uuid4()}" if uuid else ""
             dirname = (self._datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
-                       name_slug)
+                       name_slug + uuid)
             self._logdir = rootdir / Path(dirname)
         else:
             # Use custom directory.

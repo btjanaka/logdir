@@ -2,6 +2,7 @@
 import datetime
 import json
 import pickle
+import re
 from pathlib import Path
 
 import pytest
@@ -78,6 +79,18 @@ def test_creates_with_slugify_kwargs(tmp_path):
            slugify_kwargs={"separator": "XXX"})
     expected_path = tmp_path / "logs" / f"{TIME_STR}_myXXXexperiment"
     assert expected_path.is_dir()
+
+
+@freeze_time(TIME)
+def test_creates_with_uuid(tmp_path):
+    logdir = LogDir("My Experiment", tmp_path, uuid=True)
+    assert logdir.logdir.parent == tmp_path
+
+    start = f"{TIME_STR}_my-experiment"
+    assert logdir.logdir.name.startswith(start)
+
+    # Roughly matches the rest of the name to a UUID.
+    assert re.fullmatch(r"_[a-z0-9\-]{36}", logdir.logdir.name[len(start):])
 
 
 def test_reuses_existing_dir(tmp_path):
