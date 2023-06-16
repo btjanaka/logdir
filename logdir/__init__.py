@@ -1,5 +1,5 @@
 """A utility for managing logging directories."""
-__version__ = "0.12.0"
+__version__ = "0.13.0"
 
 __all__ = [
     "LogDir",
