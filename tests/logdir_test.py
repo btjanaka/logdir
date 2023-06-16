@@ -82,7 +82,7 @@ def test_creates_with_slugify_kwargs(tmp_path):
 
 
 @freeze_time(TIME)
-def test_creates_with_uuid(tmp_path):
+def test_creates_with_default_uuid(tmp_path):
     logdir = LogDir("My Experiment", tmp_path, uuid=True)
     assert logdir.logdir.parent == tmp_path
 
@@ -90,7 +90,29 @@ def test_creates_with_uuid(tmp_path):
     assert logdir.logdir.name.startswith(start)
 
     # Roughly matches the rest of the name to a UUID.
-    assert re.fullmatch(r"_[a-z0-9\-]{36}", logdir.logdir.name[len(start):])
+    assert re.fullmatch(r"_[a-zA-Z0-9]{16}", logdir.logdir.name[len(start):])
+
+
+@freeze_time(TIME)
+@pytest.mark.parametrize("length", [1, 8, 20])
+def test_creates_with_different_length_uuid(tmp_path, length):
+    logdir = LogDir("My Experiment", tmp_path, uuid=length)
+    start = f"{TIME_STR}_my-experiment"
+    assert re.fullmatch(r"_[a-zA-Z0-9]{" + str(length) + "}",
+                        logdir.logdir.name[len(start):])
+
+
+@freeze_time(TIME)
+def test_creates_no_uuid(tmp_path):
+    logdir = LogDir("My Experiment", tmp_path, uuid=0)
+    start = f"{TIME_STR}_my-experiment"
+    assert logdir.logdir.name == start
+
+
+@freeze_time(TIME)
+def test_invalid_uuid_value(tmp_path):
+    with pytest.raises(ValueError):
+        logdir = LogDir("My Experiment", tmp_path, uuid=[1, 2, 3])
 
 
 def test_reuses_existing_dir(tmp_path):

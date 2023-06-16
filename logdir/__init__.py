@@ -14,6 +14,7 @@ from collections import namedtuple
 from pathlib import Path
 from uuid import uuid4
 
+import shortuuid
 import slugify
 import toml
 from dulwich.repo import Repo
@@ -27,18 +28,20 @@ class LogDir:
     methods.
     """
 
+    DEFAULT_UUID_LEN = 16
+
     def __init__(self,
                  name,
                  rootdir="./logs",
                  custom_dir=None,
                  slugify_kwargs=None,
-                 uuid=False):
+                 uuid=None):
         """Initializes by creating the logging directory.
 
         The directory is created under `rootdir` (which is created if it does
         not exist). Logging directory is named with the date, followed by the
         time, followed by the slugified `name`, followed by a UUID (if
-        `uuid=True`). For example:
+        `uuid` is provided). For example:
 
         ```
         2020-02-14_18-01-45_my-logging-dir_16fd2706-8baf-433b-82eb-8c7fada847da
@@ -62,27 +65,44 @@ class LogDir:
                 does not exist, it will be created.
             slugify_kwargs: kwargs for
                 [slugify](https://github.com/un33k/python-slugify#options).
-            uuid (bool): If passed in, generates a
+            uuid (bool or int): If passed in, generates a
                 [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
-                and appends it to the directory name, i.e. `..._[UUID]`. This
+                and appends it to the directory name, i.e., `..._[UUID]`. This
                 can be useful if you are generating multiple logging directories
                 at the same time -- by default, directories will have name
-                conflicts if they are generated during the same second. The
-                UUID is generated randomly with
-                [uuid4](https://docs.python.org/3/library/uuid.html#uuid.uuid4).
-                Ignored when `custom_dir` is passed in.
+                conflicts if they are generated during the same second in time.
+                When this parameter is an int, it indicates the length of the
+                UUID (e.g. `uuid=8` indicates a UUID of length 8). A "falsy"
+                value (e.g., 0, False, None) indicates no UUID should be
+                generated. Passing in True will indicate a UUID of default
+                length 16. UUID generation is done randomly with
+                [shortuuid](https://github.com/skorokithakis/shortuuid/).
         """
         self._name = name
 
         self._datetime = datetime.datetime.now()
         if custom_dir is None:
+
+            if uuid:
+                if isinstance(uuid, bool):
+                    uuid_len = self.DEFAULT_UUID_LEN
+                elif isinstance(uuid, int):
+                    uuid_len = uuid
+                else:
+                    raise ValueError(
+                        f"Expected `uuid` to be a bool or int but got {uuid}")
+                uuid_str = f"_{shortuuid.ShortUUID().random(length=uuid_len)}"
+            else:
+                # If the uuid is 0, we go here because `if uuid` is False.
+                uuid_str = ""
+
             # Automatically generate directory in `rootdir`.
             rootdir = Path(rootdir)
             slugify_kwargs = {} if slugify_kwargs is None else slugify_kwargs
             name_slug = slugify.slugify(name, **slugify_kwargs)
-            uuid = f"_{uuid4()}" if uuid else ""
+
             dirname = (self._datetime.strftime("%Y-%m-%d_%H-%M-%S") + "_" +
-                       name_slug + uuid)
+                       name_slug + uuid_str)
             self._logdir = rootdir / Path(dirname)
         else:
             # Use custom directory.
@@ -297,5 +317,4 @@ class LogDir:
 
             lines.extend(map(lambda s: f"- {s}", info))
             file.write("\n".join(lines) + "\n")
-
             return readme_path
